@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Baby Pig Rescue 🐷</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <div class="floating-hearts"></div>
+
+    <nav>
+
+        <div class="logo">
+            🐷❤️
+        </div>
+
+        <div class="nav-links">
+
+            <a href="home.html">Home</a>
+            <a href="story.html">Our Story</a>
+            <a href="game.html">Game</a>
+            <a href="surprise.html">Surprise</a>
+
+        </div>
+
+    </nav>
+
+
+    <main>
+
+        <section class="game-intro">
+
+            <div class="big-emoji">
+                🐷
+            </div>
+
+            <h1>
+                Save Your Baby Pig!
+            </h1>
+
+            <p>
+                Your Baby Pig is trapped in a world
+                full of angry faces. 😤
+            </p>
+
+            <p>
+                Your mission, idiot:
+                <strong>catch the hearts and save her.</strong>
+            </p>
+
+            <div class="game-rules">
+
+                <div>
+                    ❤️
+                    <br>
+                    <strong>+10</strong>
+                    <br>
+                    Heart
+                </div>
+
+                <div>
+                    💖
+                    <br>
+                    <strong>+25</strong>
+                    <br>
+                    Bonus
+                </div>
+
+                <div>
+                    😤
+                    <br>
+                    <strong>-15</strong>
+                    <br>
+                    Angry
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="game-wrapper">
+
+            <div class="game-top">
+
+                <div>
+                    ❤️
+                    <span id="score">0</span>
+                </div>
+
+                <div>
+                    🏆
+                    <span id="highScore">0</span>
+                </div>
+
+                <div>
+                    ⏱️
+                    <span id="time">60</span>
+                </div>
+
+                <div>
+                    🔥
+                    <span id="combo">0</span>
+                </div>
+
+            </div>
+
+
+            <div class="level">
+
+                Level
+                <span id="level">
+                    1
+                </span>
+
+            </div>
+
+
+            <div id="gameArea">
+
+                <div id="player">
+                    🐷
+                </div>
+
+                <div id="startScreen">
+
+                    <div class="start-icon">
+                        🎮
+                    </div>
+
+                    <h2>
+                        Ready, Idiot?
+                    </h2>
+
+                    <p>
+                        Don't let your Baby Pig down.
+                    </p>
+
+                    <button onclick="startGame()">
+                        START ❤️
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div id="gameMessage">
+                Catch the hearts!
+            </div>
+
+
+            <button id="restartButton" onclick="startGame()" style="display:none;">
+
+                Play Again 🔄
+
+            </button>
+
+        </section>
+
+
+        <section class="game-story">
+
+            <h2>
+                Mission Briefing 🕵️‍♀️
+            </h2>
+
+            <p>
+                Your Baby Pig has entered the
+                <strong>Land of Yesterday's Fight.</strong>
+            </p>
+
+            <p>
+                The land is full of angry faces,
+                dramatic emotions and unnecessary
+                stubbornness. 😭
+            </p>
+
+            <p>
+                Only you can rescue her.
+            </p>
+
+            <p>
+                Collect enough hearts to prove
+                that you're still her favourite idiot.
+            </p>
+
+        </section>
+
+
+        <div class="page-buttons">
+
+            <button onclick="goTo('story.html')">
+                ← Our Story
+            </button>
+
+            <button onclick="goTo('surprise.html')">
+                Final Surprise ❤️ →
+            </button>
+
+        </div>
+
+    </main>
+
+
+    <footer>
+        Baby Pig Game Studios™ 🐷
+    </footer>
+
+
+    <script>
+
+        let score = 0;
+        let highScore =
+            Number(localStorage.getItem("babyPigHighScore")) || 0;
+
+        let time = 60;
+        let combo = 0;
+        let level = 1;
+
+        let gameRunning = false;
+
+        let timerInterval;
+        let spawnInterval;
+
+        let playerX = 50;
+
+        const gameArea =
+            document.getElementById("gameArea");
+
+        const player =
+            document.getElementById("player");
+
+        const scoreElement =
+            document.getElementById("score");
+
+        const highScoreElement =
+            document.getElementById("highScore");
+
+        const timeElement =
+            document.getElementById("time");
+
+        const comboElement =
+            document.getElementById("combo");
+
+        const levelElement =
+            document.getElementById("level");
+
+        const message =
+            document.getElementById("gameMessage");
+
+        const startScreen =
+            document.getElementById("startScreen");
+
+        const restartButton =
+            document.getElementById("restartButton");
+
+
+        highScoreElement.innerText =
+            highScore;
+
+
+        /* =====================================
+           START GAME
+        ===================================== */
+
+        function startGame() {
+
+            clearInterval(timerInterval);
+
+            clearInterval(spawnInterval);
+
+            document
+                .querySelectorAll(".game-object")
+                .forEach(el => el.remove());
+
+
+            score = 0;
+            time = 60;
+            combo = 0;
+            level = 1;
+
+            gameRunning = true;
+
+            scoreElement.innerText =
+                score;
+
+            timeElement.innerText =
+                time;
+
+            comboElement.innerText =
+                combo;
+
+            levelElement.innerText =
+                level;
+
+            message.innerText =
+                "SAVE YOUR BABY PIG! 🐷❤️";
+
+
+            startScreen.style.display =
+                "none";
+
+            restartButton.style.display =
+                "none";
+
+
+            timerInterval =
+                setInterval(updateTimer, 1000);
+
+
+            spawnInterval =
+                setInterval(
+                    spawnObject,
+                    850
+                );
+
+
+            playerX = 50;
+
+            updatePlayer();
+
+        }
+
+
+        /* =====================================
+           TIMER
+        ===================================== */
+
+        function updateTimer() {
+
+            if (!gameRunning)
+                return;
+
+
+            time--;
+
+            timeElement.innerText =
+                time;
+
+
+            if (time <= 0) {
+
+                endGame();
+
+            }
+
+
+            updateLevel();
+
+        }
+
+
+        /* =====================================
+           LEVEL SYSTEM
+        ===================================== */
+
+        function updateLevel() {
+
+            let newLevel =
+                Math.floor(
+                    (60 - time) / 10
+                ) + 1;
+
+
+            if (
+                newLevel !== level &&
+                newLevel <= 6
+            ) {
+
+                level = newLevel;
+
+                levelElement.innerText =
+                    level;
+
+                showMessage(
+                    "LEVEL " +
+                    level +
+                    "! It's getting harder 😭"
+                );
+
+            }
+
+        }
+
+
+        /* =====================================
+           SPAWN OBJECT
+        ===================================== */
+
+        function spawnObject() {
+
+            if (!gameRunning)
+                return;
+
+
+            const object =
+                document.createElement("div");
+
+            object.className =
+                "game-object";
+
+
+            const random =
+                Math.random();
+
+
+            if (random < 0.68) {
+
+                object.innerText =
+                    "❤️";
+
+                object.dataset.type =
+                    "heart";
+
+            }
+
+            else if (random < 0.83) {
+
+                object.innerText =
+                    "💖";
+
+                object.dataset.type =
+                    "bonus";
+
+            }
+
+            else {
+
+                object.innerText =
+                    "😤";
+
+                object.dataset.type =
+                    "enemy";
+
+            }
+
+
+            object.style.left =
+                Math.random() * 90 + "%";
+
+
+            object.style.top =
+                "-50px";
+
+
+            gameArea.appendChild(object);
+
+
+            let speed =
+                2.5 +
+                level * 0.6;
+
+
+            moveObject(
+                object,
+                speed
+            );
+
+        }
+
+
+        /* =====================================
+           MOVE OBJECT
+        ===================================== */
+
+        function moveObject(
+            object,
+            speed
+        ) {
+
+            if (!gameRunning) {
+
+                object.remove();
+
+                return;
+
+            }
+
+
+            let top =
+                parseFloat(
+                    object.style.top
+                );
+
+
+            top += speed;
+
+
+            object.style.top =
+                top + "px";
+
+
+            const objectRect =
+                object.getBoundingClientRect();
+
+
+            const playerRect =
+                player.getBoundingClientRect();
+
+
+            if (
+                objectRect.bottom >=
+                playerRect.top + 5 &&
+
+                objectRect.left <
+                playerRect.right &&
+
+                objectRect.right >
+                playerRect.left
+            ) {
+
+                collectObject(
+                    object
+                );
+
+                return;
+
+            }
+
+
+            if (
+                top >
+                gameArea.clientHeight
+            ) {
+
+                object.remove();
+
+                return;
+
+            }
+
+
+            requestAnimationFrame(
+                () =>
+                    moveObject(
+                        object,
+                        speed
+                    )
+            );
+
+        }
+
+
+        /* =====================================
+           COLLECT OBJECT
+        ===================================== */
+
+        function collectObject(
+            object
+        ) {
+
+            const type =
+                object.dataset.type;
+
+
+            object.remove();
+
+
+            if (type === "heart") {
+
+                combo++;
+
+                score +=
+                    10 +
+                    combo * 2;
+
+                showMessage(
+                    randomHeartMessage()
+                );
+
+            }
+
+
+            else if (
+                type === "bonus"
+            ) {
+
+                combo += 2;
+
+                score += 25;
+
+                showMessage(
+                    "BONUS HEART! 💖 +25"
+                );
+
+                createExplosion(
+                    "💖"
+                );
+
+            }
+
+
+            else if (
+                type === "enemy"
+            ) {
+
+                combo = 0;
+
+                score -= 15;
+
+                if (score < 0)
+                    score = 0;
+
+                showMessage(
+                    "HEY! DON'T HIT YOUR BABY PIG! 😭"
+                );
+
+            }
+
+
+            scoreElement.innerText =
+                score;
+
+            comboElement.innerText =
+                combo;
+
+
+            if (
+                score > highScore
+            ) {
+
+                highScore =
+                    score;
+
+                localStorage.setItem(
+                    "babyPigHighScore",
+                    highScore
+                );
+
+                highScoreElement.innerText =
+                    highScore;
+
+            }
+
+
+            if (
+                score >= 500
+            ) {
+
+                showMessage(
+                    "500+?! Okay Mr. Romantic. 😭❤️"
+                );
+
+            }
+
+        }
+
+
+        /* =====================================
+           RANDOM MESSAGES
+        ===================================== */
+
+        function randomHeartMessage() {
+
+            const messages = [
+
+                "That's my idiot! ❤️",
+
+                "Good catch! 🐷",
+
+                "Baby Pig approves. 🐷❤️",
+
+                "One more heart for us.",
+
+                "Look who's catching feelings 😂",
+
+                "Okayyyy, show off!",
+
+                "You're getting good at this 👀",
+
+                "That's worth +10 love points ❤️"
+
+            ];
+
+
+            return messages[
+                Math.floor(
+                    Math.random() *
+                    messages.length
+                )
+            ];
+
+        }
+
+
+        /* =====================================
+           PLAYER MOVEMENT
+        ===================================== */
+
+        gameArea.addEventListener(
+            "mousemove",
+            event => {
+
+                if (!gameRunning)
+                    return;
+
+
+                const rect =
+                    gameArea.getBoundingClientRect();
+
+
+                playerX =
+                    (
+                        (event.clientX -
+                            rect.left) /
+                        rect.width
+                    ) * 100;
+
+
+                playerX =
+                    Math.max(
+                        5,
+                        Math.min(
+                            95,
+                            playerX
+                        )
+                    );
+
+
+                updatePlayer();
+
+            }
+        );
+
+
+        /* TOUCH SUPPORT */
+
+        gameArea.addEventListener(
+            "touchmove",
+            event => {
+
+                if (!gameRunning)
+                    return;
+
+
+                const touch =
+                    event.touches[0];
+
+
+                const rect =
+                    gameArea.getBoundingClientRect();
+
+
+                playerX =
+                    (
+                        (touch.clientX -
+                            rect.left) /
+                        rect.width
+                    ) * 100;
+
+
+                playerX =
+                    Math.max(
+                        5,
+                        Math.min(
+                            95,
+                            playerX
+                        )
+                    );
+
+
+                updatePlayer();
+
+                event.preventDefault();
+
+            },
+            {
+                passive: false
+            }
+        );
+
+
+        /* =====================================
+           UPDATE PLAYER
+        ===================================== */
+
+        function updatePlayer() {
+
+            player.style.left =
+                playerX + "%";
+
+        }
+
+
+        /* =====================================
+           GAME END
+        ===================================== */
+
+        function endGame() {
+
+            gameRunning = false;
+
+
+            clearInterval(
+                timerInterval
+            );
+
+            clearInterval(
+                spawnInterval
+            );
+
+
+            document
+                .querySelectorAll(
+                    ".game-object"
+                )
+                .forEach(
+                    el => el.remove()
+                );
+
+
+            restartButton.style.display =
+                "inline-block";
+
+
+            let finalMessage;
+
+
+            if (score < 100) {
+
+                finalMessage =
+                    "Baby Pig needs more love. 😭🐷";
+
+            }
+
+            else if (score < 250) {
+
+                finalMessage =
+                    "Okay... not bad, idiot. ❤️";
+
+            }
+
+            else if (score < 500) {
+
+                finalMessage =
+                    "Baby Pig is impressed. 🐷❤️";
+
+            }
+
+            else {
+
+                finalMessage =
+                    "YOU SAVED THE BABY PIG! 🐷👑❤️";
+
+                celebration();
+
+            }
+
+
+            message.innerText =
+                finalMessage +
+                " Final score: " +
+                score;
+
+        }
+
+
+        /* =====================================
+           MESSAGE
+        ===================================== */
+
+        function showMessage(
+            text
+        ) {
+
+            message.innerText =
+                text;
+
+        }
+
+
+        /* =====================================
+           EXPLOSION
+        ===================================== */
+
+        function createExplosion(
+            emoji
+        ) {
+
+            for (
+                let i = 0;
+                i < 8;
+                i++
+            ) {
+
+                const element =
+                    document.createElement(
+                        "div"
+                    );
+
+                element.innerText =
+                    emoji;
+
+                element.className =
+                    "explosion";
+
+                element.style.left =
+                    playerX + "%";
+
+                element.style.top =
+                    "80%";
+
+                element.style.setProperty(
+                    "--x",
+                    (
+                        Math.random() *
+                        200 -
+                        100
+                    ) + "px"
+                );
+
+                element.style.setProperty(
+                    "--y",
+                    (
+                        Math.random() *
+                        -200
+                    ) + "px"
+                );
+
+
+                gameArea.appendChild(
+                    element
+                );
+
+
+                setTimeout(
+                    () => element.remove(),
+                    900
+                );
+
+            }
+
+        }
+
+
+        /* =====================================
+           CELEBRATION
+        ===================================== */
+
+        function celebration() {
+
+            const emojis = [
+                "❤️",
+                "💖",
+                "💕",
+                "🐷",
+                "🎉"
+            ];
+
+
+            for (
+                let i = 0;
+                i < 50;
+                i++
+            ) {
+
+                setTimeout(
+                    () => {
+
+                        const heart =
+                            document.createElement(
+                                "div"
+                            );
+
+                        heart.innerText =
+                            emojis[
+                            Math.floor(
+                                Math.random() *
+                                emojis.length
+                            )
+                            ];
+
+                        heart.style.position =
+                            "fixed";
+
+                        heart.style.left =
+                            Math.random() *
+                            100 + "vw";
+
+                        heart.style.top =
+                            "-30px";
+
+                        heart.style.fontSize =
+                            "25px";
+
+                        heart.style.zIndex =
+                            "9999";
+
+                        heart.style.transition =
+                            "3s linear";
+
+                        document.body.appendChild(
+                            heart
+                        );
+
+
+                        setTimeout(
+                            () => {
+
+                                heart.style.top =
+                                    "110vh";
+
+                                heart.style.transform =
+                                    "rotate(720deg)";
+
+                            },
+                            50
+                        );
+
+
+                        setTimeout(
+                            () =>
+                                heart.remove(),
+                            3500
+                        );
+
+                    },
+                    i * 50
+                );
+
+            }
+
+        }
+
+
+        /* =====================================
+           NAVIGATION
+        ===================================== */
+
+        function goTo(
+            page
+        ) {
+
+            window.location.href =
+                page;
+
+        }
+
+    </script>
+
+
+    <style>
+        /* GAME INTRO */
+
+        .game-intro {
+
+            text-align: center;
+
+        }
+
+        .game-intro h1 {
+
+            font-size:
+                clamp(40px, 7vw, 70px);
+
+            margin: 15px 0;
+
+        }
+
+        .game-intro p {
+
+            font-size: 18px;
+
+            line-height: 1.8;
+
+            margin: 8px;
+
+        }
+
+
+        .game-rules {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 30px;
+
+            flex-wrap: wrap;
+
+            margin-top: 30px;
+
+        }
+
+        .game-rules div {
+
+            background: #fff3f6;
+
+            padding: 20px 30px;
+
+            border-radius: 20px;
+
+            font-size: 24px;
+
+        }
+
+
+        /* GAME */
+
+        .game-wrapper {
+
+            text-align: center;
+
+        }
+
+
+        .game-top {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 35px;
+
+            flex-wrap: wrap;
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .level {
+
+            margin-bottom: 15px;
+
+            color: #d34e70;
+
+            font-weight: bold;
+
+        }
+
+
+        #gameArea {
+
+            height: 500px;
+
+            position: relative;
+
+            overflow: hidden;
+
+            border-radius: 30px;
+
+            background:
+
+                radial-gradient(circle at 30% 20%,
+                    #ffffff,
+                    transparent 25%),
+
+                linear-gradient(135deg,
+                    #ffe8ef,
+                    #eee7ff);
+
+            border:
+                4px dashed #ff9eb6;
+
+            touch-action: none;
+
+        }
+
+
+        /* PLAYER */
+
+        #player {
+
+            position: absolute;
+
+            bottom: 15px;
+
+            left: 50%;
+
+            transform:
+                translateX(-50%);
+
+            font-size: 55px;
+
+            transition:
+                left .05s linear;
+
+            z-index: 5;
+
+            filter:
+                drop-shadow(0 8px 5px rgba(0, 0, 0, .12));
+
+        }
+
+
+        /* START SCREEN */
+
+        #startScreen {
+
+            position: absolute;
+
+            inset: 0;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background:
+                rgba(255, 255, 255, .82);
+
+            backdrop-filter:
+                blur(5px);
+
+            z-index: 20;
+
+        }
+
+
+        .start-icon {
+
+            font-size: 70px;
+
+        }
+
+
+        #startScreen h2 {
+
+            font-size: 35px;
+
+            margin: 10px;
+
+        }
+
+
+        #startScreen p {
+
+            margin-bottom: 15px;
+
+        }
+
+
+        /* FALLING OBJECTS */
+
+        .game-object {
+
+            position: absolute;
+
+            font-size: 35px;
+
+            z-index: 3;
+
+            user-select: none;
+
+            pointer-events: none;
+
+        }
+
+
+        /* MESSAGE */
+
+        #gameMessage {
+
+            min-height: 35px;
+
+            margin: 18px;
+
+            font-weight: bold;
+
+            font-size: 18px;
+
+            color: #d94e70;
+
+        }
+
+
+        /* EXPLOSION */
+
+        .explosion {
+
+            position: absolute;
+
+            font-size: 25px;
+
+            animation:
+                explosion .8s ease-out forwards;
+
+            z-index: 10;
+
+        }
+
+
+        @keyframes explosion {
+
+            from {
+
+                transform:
+                    translate(0, 0) scale(.5);
+
+                opacity: 1;
+
+            }
+
+            to {
+
+                transform:
+                    translate(var(--x),
+                        var(--y)) scale(1.5);
+
+                opacity: 0;
+
+            }
+
+        }
+
+
+        /* STORY */
+
+        .game-story {
+
+            text-align: center;
+
+            max-width: 700px;
+
+            margin-left: auto;
+
+            margin-right: auto;
+
+        }
+
+
+        .game-story p {
+
+            line-height: 1.8;
+
+            margin: 15px;
+
+        }
+
+
+        @media(max-width:600px) {
+
+            #gameArea {
+
+                height: 420px;
+
+            }
+
+            .game-top {
+
+                gap: 15px;
+
+                font-size: 16px;
+
+            }
+
+        }
+    </style>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
