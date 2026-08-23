@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Just For You ❤️</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="login-page">
+
+    <div class="floating-hearts"></div>
+
+    <main class="login-card">
+
+        <div class="login-icon">🔐</div>
+
+        <h1>Hey, Idiot.</h1>
+
+        <p class="login-subtitle">
+            This little place isn't for everyone.
+        </p>
+
+        <p>
+            If you're the person this website was made for...
+            you already know the secret code. 👀
+        </p>
+
+        <div class="password-container">
+
+            <input
+                type="password"
+                id="password"
+                maxlength="4"
+                inputmode="numeric"
+                placeholder="Enter 4-digit code"
+                autocomplete="off"
+            >
+
+            <button onclick="checkPassword()">
+                Enter ❤️
+            </button>
+
+        </div>
+
+        <p id="error" class="error"></p>
+
+        <div class="tiny-hint">
+            Hint: You probably know it. 🤭
+        </div>
+
+    </main>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
